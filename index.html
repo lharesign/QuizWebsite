@@ -5,47 +5,81 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script src="quiz.js"></script>
     <script src="https://kit.fontawesome.com/14a6d0f73b.js" crossorigin="anonymous"></script>
-    <link rel="stylesheet" href="style.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="quiz.js" defer></script>
+    <link rel="stylesheet" href="light-style.css">
     <title>Quiz</title>
 </head>
 
 <body>
-
-    <div class="quiz-container">
-        <!-- QUIZ MAIN BODY -->
-        <div class="quiz-header">
-            <h4>Sweden Quiz</h4><span class="page-info"><!-- Insert page info here with jQuery --></span>
+    <header>
+        <h2 class="header-title">Quizzle</h2>
+        <span class="quiz-selector-btn">Sports</span>
+        <span class="quiz-selector-btn">Geography</span>
+    </header>
+    <div class="container">
+        <div class="quiz-container">
+            <!-- QUIZ MAIN BODY -->
+            <div class="quiz-header">
+                <h3 class="quiz-title">Sports Quiz</h3><span class="page-info">
+                    <!-- Insert page info here with jQuery --> (1 of 10)</span>
+            </div>
+            <!-- QUIZ MAIN BODY -->
+            <div class="quiz-body">
+                <div class="quiz-question-div">
+                    <h3 class="quiz-q-letter">Q.</h3>
+                    <h4 class="quiz-question">Which of the following country has largest population?</h5>
+                </div>
+                <div class="answers-div">
+                    <div class="quiz-answer answer1">
+                        <label class="radio"> <input type="radio" name="answer" value="brazil"> <span>Brazil</span>
+                        </label>
+                    </div>
+                    <div class="quiz-answer answer2">
+                        <label class="radio"> <input type="radio" name="answer" value="Germany"> <span>Germany</span>
+                        </label>
+                    </div>
+                    <div class="quiz-answer answer3">
+                        <label class="radio"> <input type="radio" name="answer" value="Indonesia">
+                            <span>Indonesia</span>
+                        </label>
+                    </div>
+                    <div class="quiz-answer answer4">
+                        <label class="radio"> <input type="radio" name="answer" value="Russia"> <span>Russia</span>
+                        </label>
+                    </div>
+                </div>
+            </div>
+            <!-- QUIZ FOOTER -->
+            <div class="quiz-footer">
+                <button class="btn btn-primary prev-btn" type="button"><i
+                        class="fa fa-angle-left"></i>&nbsp;Previous</button>
+                <button class="btn btn-primary next-btn" type="button">Next&nbsp;<i
+                        class="fa fa-angle-right"></i></button>
+            </div>
         </div>
-        <!-- QUIZ MAIN BODY -->
-        <div class="quiz-body">
-            <div class="quiz-question-div">
-                <h3 class="quiz-q-letter">Q.</h3>
-                <h5 class="quiz-question">Which of the following country has largest population?</h5>
-            </div>
-            <div class="quiz-answer answer1">
-                <label class="radio"> <input type="radio" name="brazil" value="brazil"> <span>Brazil</span>
-                </label>
-            </div>
-            <div class="quiz-answer answer2">
-                <label class="radio"> <input type="radio" name="Germany" value="Germany"> <span>Germany</span>
-                </label>
-            </div>
-            <div class="quiz-answer answer3">
-                <label class="radio"> <input type="radio" name="Indonesia" value="Indonesia"> <span>Indonesia</span>
-                </label>
-            </div>
-            <div class="quiz-answer answer4">
-                <label class="radio"> <input type="radio" name="Russia" value="Russia"> <span>Russia</span>
-                </label>
-            </div>
-        </div>
-        <!-- QUIZ FOOTER -->
-        <div class="quiz-footer">
-            <button class="prev-btn" type="button"><i class="fa fa-angle-left"></i>&nbsp;previous</button>
-            <button class="next-btn" type="button">Next<i class="fa fa-angle-right"></i></button>
-        </div>
+        <!-- END OF QUIZ CONTAINER -->
     </div>
-    <!-- END OF QUIZ CONTAINER -->
+    <footer id="footer">
+        <div class="column">
+            <h3>Connect with me</h3>
+            <!-- Add font awesome icons -->
+            <table class="fa-icons-table">
+                <tr>
+                    <td><a href="https://www.linkedin.com/in/lukeharesign/" class="fa fa-linkedin"></a></td>
+                    <td><a href="https://github.com/lharesign" class="fa fa-github"></a></td>
+                    <td><a href="https://www.instagram.com/lukeharesign/" class="fa fa-instagram"></a></td>
+                </tr>
+            </table>
+        </div>
+        <div class="dark-mode-switch">
+            <h4>Dark Mode</h4>
+            <label class="form-switch">
+                <input id="toggle-switch" type="checkbox" onclick="darkMode()">
+                <i></i>
+            </label>
+        </div>
+    </footer>
 </body>
 
 </html>
