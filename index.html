@@ -3,7 +3,6 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <script src="quiz.js"></script>
     <script src="https://kit.fontawesome.com/14a6d0f73b.js" crossorigin="anonymous"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script src="quiz.js" defer></script>
@@ -14,8 +13,8 @@
 <body>
     <header>
         <h2 class="header-title">Quizzle</h2>
-        <span class="quiz-selector-btn">Sports</span>
-        <span class="quiz-selector-btn">Geography</span>
+        <span class="quiz-selector-btn" onclick="fetchQuiz('sports')">Sports</span>
+        <span class="quiz-selector-btn" onclick="fetchQuiz('geography')">Geography</span>
     </header>
     <div class="container">
         <div class="quiz-container">
@@ -31,21 +30,24 @@
                     <h4 class="quiz-question">Which of the following country has largest population?</h5>
                 </div>
                 <div class="answers-div">
-                    <div class="quiz-answer answer1">
-                        <label class="radio"> <input type="radio" name="answer" value="brazil"> <span>Brazil</span>
+                    <div class="quiz-answer">
+                        <label class="radio"> <input type="radio" name="answer" value="Brazil">
+                            <span class="answer-span">Brazil</span>
                         </label>
                     </div>
-                    <div class="quiz-answer answer2">
-                        <label class="radio"> <input type="radio" name="answer" value="Germany"> <span>Germany</span>
+                    <div class="quiz-answer">
+                        <label class="radio"> <input type="radio" name="answer" value="Germany">
+                            <span class="answer-span">Germany</span>
                         </label>
                     </div>
-                    <div class="quiz-answer answer3">
+                    <div class="quiz-answer">
                         <label class="radio"> <input type="radio" name="answer" value="Indonesia">
-                            <span>Indonesia</span>
+                            <span class="answer-span">Indonesia</span>
                         </label>
                     </div>
-                    <div class="quiz-answer answer4">
-                        <label class="radio"> <input type="radio" name="answer" value="Russia"> <span>Russia</span>
+                    <div class="quiz-answer">
+                        <label class="radio"> <input type="radio" name="answer" value="Russia">
+                            <span class="answer-span">Russia</span>
                         </label>
                     </div>
                 </div>
