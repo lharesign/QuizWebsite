@@ -1,0 +1,56 @@
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://kit.fontawesome.com/14a6d0f73b.js" crossorigin="anonymous"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="quiz.js" defer></script>
+    <link rel="stylesheet" href="light-style.css">
+    <title>Quizzle</title>
+</head>
+
+<body>
+    <header>
+        <h2 class="header-title">Quizzle</h2>
+        <span class="quiz-selector-btn" onclick="fetchQuiz('sports')">Sports</span>
+        <span class="quiz-selector-btn" onclick="fetchQuiz('geography')">Geography</span>
+    </header>
+    <div class="container">
+        <div class="quiz-container">
+            <!-- QUIZ MAIN BODY -->
+            <div class="quiz-header">
+                <h3 class="quiz-title">Example Quiz</h3>
+            </div>
+            <!-- QUIZ MAIN BODY -->
+            <div class="quiz-body">
+                <h1 class="result-header">Congratulations!</h3>
+                <h3 class="result-info">You had 5 out of 10 correct</h5>
+                <p class="try-again">Want to try another quiz? Select one from the menu</p>
+            </div>
+        </div>
+        <!-- END OF QUIZ CONTAINER -->
+    </div>
+    <footer id="footer">
+        <div class="column">
+            <h3>Connect with me</h3>
+            <!-- Add font awesome icons -->
+            <table class="fa-icons-table">
+                <tr>
+                    <td><a href="https://www.linkedin.com/in/lukeharesign/" class="fa fa-linkedin"></a></td>
+                    <td><a href="https://github.com/lharesign" class="fa fa-github"></a></td>
+                    <td><a href="https://www.instagram.com/lukeharesign/" class="fa fa-instagram"></a></td>
+                </tr>
+            </table>
+        </div>
+        <div class="dark-mode-switch">
+            <h4>Dark Mode</h4>
+            <label class="form-switch">
+                <input id="toggle-switch" type="checkbox" onclick="darkMode()">
+                <i></i>
+            </label>
+        </div>
+    </footer>
+</body>
+
+</html>

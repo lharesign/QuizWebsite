@@ -8,8 +8,6 @@ function darkMode() {
     } else {
         $("link[rel=stylesheet]").attr({ href: "light-style.css" });
     }
-
-    console.log(darkSwitch)
 }
 
 //Defining quiz and multiple subclasses of quiz to enable easier access to data
@@ -21,9 +19,10 @@ class Quiz {
 }
 
 class Answers extends Quiz {
-    constructor(_answers, _genre, _noOfQuestions) {
+    constructor(_answers, _genre, _noOfQuestions, _correctAnswer) {
         super(_genre, _noOfQuestions);
         this.answers = _answers;
+        this.correctAnswer = _correctAnswer;
     }
 }
 
@@ -75,9 +74,6 @@ function fetchQuiz(topic) {
         let genre = data.results[0].category;
         let noOfQuestions = data.results.length;
 
-        //Creating a new quiz class and sending over genre and no of questions as parameters
-        let currentQuiz = new Quiz(genre, noOfQuestions);
-
         //Creating answers and questions arrays for storing class instances
         let answersObjects = [];
         let questionObjects = [];
@@ -90,7 +86,11 @@ function fetchQuiz(topic) {
             for (let i = 0; i < record.incorrect_answers.length; i++) {
                 tempAnswers.push(record.incorrect_answers[i]);
             }
+
+            //Pushing correct answer to array too
             tempAnswers.push(record.correct_answer);
+
+            tempAnswers = shuffleArray(tempAnswers);
 
             //Creating new instance of questions class and passing it the records question as parameter
             //pushing new Question class instance to questions array
@@ -99,14 +99,14 @@ function fetchQuiz(topic) {
 
             //Creating new instance of answers class and passing it the records answers as parameter
             //pushing new answers class instance to answers array
-            let newAnswers = new Answers(tempAnswers, genre, noOfQuestions);
+            let newAnswers = new Answers(tempAnswers, genre, noOfQuestions, record.correct_answer);
             answersObjects.push(newAnswers);
         });
 
         let currentQuestion = 0;
 
         //Displaying the information returned by 
-        displayQuiz(answersObjects, questionObjects, genre, noOfQuestions, currentQuestion);
+        displayQuizInformation(answersObjects, questionObjects, genre, noOfQuestions, currentQuestion);
         implementButtons(answersObjects, questionObjects, noOfQuestions, currentQuestion);
     }
 
@@ -115,59 +115,178 @@ function fetchQuiz(topic) {
 }
 
 
-function displayQuiz(answersObjects, questionObjects, genre, noOfQuestions, currentQuestion) {
 
+
+function displayQuizInformation(answersObjects, questionObjects, genre, noOfQuestions, currentQuestion) {
+
+    $(".quiz-container").show();
+    $(".results-container").hide();
+    $(".welcome-container").hide();
     $(".quiz-title").text(genre + " Quiz");
     $(".page-info").text("(" + (currentQuestion + 1) + " of " + noOfQuestions + ")");
 
-    //move this to a separate function to be able to reuse this code within next and previous buttons???
-    $(".quiz-question").text(questionObjects[currentQuestion].question);
+    let selectedAnswers = [];
+
+    displayQuestion(answersObjects, questionObjects, currentQuestion, noOfQuestions, selectedAnswers);
+}
+
+
+
+
+
+
+function displayQuestion(answersObjects, questionObjects, currentQuestion, noOfQuestions, selectedAnswers) {
+    $(".quiz-question").html(questionObjects[currentQuestion].question);
+    $(".page-info").text("(" + (currentQuestion + 1) + " of " + noOfQuestions + ")");
+
+    if (currentQuestion + 1 === noOfQuestions) {
+        $(".next-btn").text("Submit Answers");
+    } else {
+        $(".next-btn").html("Next&nbsp;<i class=\"fa fa-angle-right\"></i>");
+    }
 
 
     for (let i = 0; i < $("input[name='answer']").length; i++) {
 
         let currentInput = $("input[name='answer']")[i];
         let correspondingSpan = $(".answer-span")[i];
-        console.log(answersObjects[currentQuestion].answers[i]);
 
         currentInput.value = answersObjects[currentQuestion].answers[i];
-        correspondingSpan.textContent = answersObjects[currentQuestion].answers[i];
+        $(correspondingSpan).html(answersObjects[currentQuestion].answers[i]);
+
+        if (selectedAnswers[currentQuestion] != null) {
+            if (selectedAnswers[currentQuestion].choice === currentInput.value) {
+                $(currentInput).prop("checked", true);
+            }
+        } else {
+            $(currentInput).prop("checked", false);
+        }
+
     }
 }
 
-function implementButtons(answersObjects, questionObjects, noOfQuestions, currentQuestion) {
 
+
+
+
+
+function implementButtons(answersObjects, questionObjects, noOfQuestions, _currentQuestion) {
+    
+    let currentQuestion = _currentQuestion;
+    let selectedAnswers = [];
     let nextBtn = $(".next-btn");
     let prevBtn = $(".prev-btn");
 
-
     nextBtn.click(function () {
-        if(currentQuestion < noOfQuestions) {
-            currentQuestion++;
-            
-            for (let i = 0; i < $("input[name='answer']").length; i++) {
-
-                let currentInput = $("input[name='answer']")[i];
-                let correspondingSpan = $(".answer-span")[i];
-                console.log(answersObjects[currentQuestion].answers[i]);
+        console.log(currentQuestion);
+        console.log(selectedAnswers);
         
-                currentInput.value = answersObjects[currentQuestion].answers[i];
-                correspondingSpan.textContent = answersObjects[currentQuestion].answers[i];
+        if (currentQuestion < noOfQuestions - 1) {
+
+            selectedAnswers = saveAnswer(selectedAnswers, currentQuestion);
+            currentQuestion++;
+            displayQuestion(answersObjects, questionObjects, currentQuestion, noOfQuestions, selectedAnswers);
+        } else {
+            selectedAnswers = saveAnswer(selectedAnswers, currentQuestion);
+
+            let answeredAll = true;
+
+            if (selectedAnswers.length === noOfQuestions) {
+                for (let j = 0; j < selectedAnswers.length; j++) {
+                    if (selectedAnswers[j] == null) {
+                        answeredAll = false;
+                        break;
+                    }
+                }
+            } else {
+                answeredAll = false;
+            }
+
+            if (!answeredAll) {
+                alert("Please go back through and ensure you've selected an answer to every question before submitting");
+            } else {
+                submitAnswers(selectedAnswers, answersObjects);
             }
         }
     });
 
+    prevBtn.click(function () {
+        if (currentQuestion > 0) {
+            selectedAnswers = saveAnswer(selectedAnswers, currentQuestion);
+            currentQuestion--;
+            displayQuestion(answersObjects, questionObjects, currentQuestion, noOfQuestions, selectedAnswers);
+        } else if (currentQuestion === 0) {
+            alert("You're already on the first question");
+        }
+    });
 
+}
+
+function saveAnswer(selectedAnswers, currentQuestion) {
+
+    for (let i = 0; i < $("input[name='answer']").length; i++) {
+        let currentInput = $("input[name='answer']")[i];
+
+        if ($(currentInput).prop("checked") == true) {
+            let userChoice = new UsersAnswer(currentInput.value);
+            selectedAnswers[currentQuestion] = userChoice;
+        }
+    }
+
+    return selectedAnswers;
+}
+
+
+function submitAnswers(selectedAnswers, answersObjects) {
+
+    let noCorrect = 0;
+    for (let i = 0; i < selectedAnswers.length; i++) {
+        if (selectedAnswers[i].choice === answersObjects[i].correctAnswer) {
+            noCorrect++;
+        }
+    }
+
+    let feedback;
+
+    switch (noCorrect) {
+        case 1:
+        case 2:
+        case 3:
+        case 4:
+            feedback = "Not the best, but I know you can do better";
+            break;
+        case 5:
+        case 6:
+        case 7:
+        case 8:
+            feedback = "Good effort";
+            break;
+        case 9:
+        case 10:
+            feedback = "Woah, nicely done - that's a great score";
+            break;
+        default:
+            break;
+    }
+
+    $(".quiz-container").hide();
+    $(".results-container").show();
+    $(".result-header").text(feedback + "!");
+    $(".result-info").text("You had " + noCorrect + " out of " + selectedAnswers.length + " correct");
+}
+
+
+function shuffleArray(array) {
+    for (let i = array.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [array[i], array[j]] = [array[j], array[i]];
+    }
+    return array;
 }
 
 
 /* Still to do -
-       2. implement it so that jQuery inserts multiple questions using next/previous buttons
-           2.1. if the question number is the same as the length of questions array, next should be submit
+       8. fix so you can do multiple quizzes
 
-       3. implement it so that when a user submits an answer, it is saved in an array
-
-       4. implement it so that the answer array is compared against the correcct answers
-
-       5. implement a results box once user has submitted answers
+       9. implement show results button which shows which questions you had right/wrong
     */

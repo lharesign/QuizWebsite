@@ -7,47 +7,53 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script src="quiz.js" defer></script>
     <link rel="stylesheet" href="light-style.css">
-    <title>Quiz</title>
+    <title>Quizzle</title>
 </head>
 
 <body>
     <header>
-        <h2 class="header-title">Quizzle</h2>
+        <a class="home-link" href="index.html"><h2 class="header-title">Quizzle</h2></a>
         <span class="quiz-selector-btn" onclick="fetchQuiz('sports')">Sports</span>
         <span class="quiz-selector-btn" onclick="fetchQuiz('geography')">Geography</span>
     </header>
     <div class="container">
+        <div class="welcome-container">
+            <h1 class="welcome-header">Welcome to Quizzle!</h1>
+            <p class="welcome-info">Quizzle is the home of all your geography and sports quiz needs. Select an option in
+                the top right to begin your first quiz. Don't worry if you don't do well, you can always try again!</p>
+        </div>
         <div class="quiz-container">
             <!-- QUIZ MAIN BODY -->
             <div class="quiz-header">
-                <h3 class="quiz-title">Sports Quiz</h3><span class="page-info">
+                <h3 class="quiz-title">Example Quiz</h3><span class="page-info">
                     <!-- Insert page info here with jQuery --> (1 of 10)</span>
             </div>
             <!-- QUIZ MAIN BODY -->
             <div class="quiz-body">
                 <div class="quiz-question-div">
                     <h3 class="quiz-q-letter">Q.</h3>
-                    <h4 class="quiz-question">Which of the following country has largest population?</h5>
+                    <h4 class="quiz-question">This is an example question - choose your category in the top left to get
+                        started!</h5>
                 </div>
                 <div class="answers-div">
                     <div class="quiz-answer">
-                        <label class="radio"> <input type="radio" name="answer" value="Brazil">
-                            <span class="answer-span">Brazil</span>
+                        <label class="radio"> <input type="radio" name="answer" value="Answer 1">
+                            <span class="answer-span">Answer 1</span>
                         </label>
                     </div>
                     <div class="quiz-answer">
-                        <label class="radio"> <input type="radio" name="answer" value="Germany">
-                            <span class="answer-span">Germany</span>
+                        <label class="radio"> <input type="radio" name="answer" value="Answer 2">
+                            <span class="answer-span">Answer 2</span>
                         </label>
                     </div>
                     <div class="quiz-answer">
-                        <label class="radio"> <input type="radio" name="answer" value="Indonesia">
-                            <span class="answer-span">Indonesia</span>
+                        <label class="radio"> <input type="radio" name="answer" value="Answer 3">
+                            <span class="answer-span">Answer 3</span>
                         </label>
                     </div>
                     <div class="quiz-answer">
-                        <label class="radio"> <input type="radio" name="answer" value="Russia">
-                            <span class="answer-span">Russia</span>
+                        <label class="radio"> <input type="radio" name="answer" value="Answer 4">
+                            <span class="answer-span">Answer 4</span>
                         </label>
                     </div>
                 </div>
@@ -59,6 +65,11 @@
                 <button class="btn btn-primary next-btn" type="button">Next&nbsp;<i
                         class="fa fa-angle-right"></i></button>
             </div>
+        </div>
+        <div class="results-container">
+            <h1 class="result-header"></h1>
+            <h3 class="result-info"></h3>
+            <p class="try-again">Want to try another quiz? Select one from the menu</p>
         </div>
         <!-- END OF QUIZ CONTAINER -->
     </div>

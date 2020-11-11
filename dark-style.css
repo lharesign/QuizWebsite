@@ -18,6 +18,11 @@ header {
     border-bottom: 1px solid gray;
 }
 
+.home-link {
+    text-decoration: none;
+    color: inherit;
+}
+
 .header-title {
     display: inline;
     cursor: pointer;
@@ -40,12 +45,17 @@ header {
     justify-content: center;
 }
 
-.quiz-container {
+.quiz-container, .results-container, .welcome-container {
     background-color: rgb(78, 78, 78);
     flex: 0.5;
     margin-top: 40px;
     padding: 30px;
     border-radius: 5px;
+    display: none;
+}
+
+.welcome-container {
+    display: block;
 }
 
 .quiz-title, .quiz-q-letter, .quiz-question {
@@ -78,10 +88,10 @@ label.radio input {
 
 label.radio span {
     padding: 4px 0px;
-    border: 1px solid #007bff;
+    border: 1px solid white;
     display: inline-block;
-    color: #007bff;
-    width: 150px;
+    color: white;
+    min-width: 300px;
     text-align: center;
     border-radius: 3px;
     margin-top: 7px;
@@ -168,6 +178,20 @@ label.radio input:checked+span {
     color: #fff;
     background-color: #218838;
     border-color: #1e7e34;
+}
+
+.result-header, .welcome-header {
+    text-align: center;
+}
+
+.result-info {
+    text-align: center;
+    margin-top: 20px;
+}
+
+.try-again, .welcome-info {
+    text-align: center;
+    margin-top: 20px;
 }
 
 #footer {
@@ -286,11 +310,19 @@ label.radio input:checked+span {
 .dark-mode-switch {
     float: right;
     margin-top: 20px;
+    text-align: center;
+}
+
+.dark-mode-switch h4 {
+    padding-right: 10px;
 }
 
 @media only screen and (max-width: 600px) {
-    .quiz-container {
-        background-color: white;
+    .quiz-container, .results-container, .welcome-container {
+        background-color: rgb(78, 78, 78);
         flex: 0.8;
+    }
+    label.radio span {
+        min-width: 150px;
     }
 }
