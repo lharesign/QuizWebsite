@@ -12,7 +12,9 @@
 
 <body>
     <header>
-        <a class="home-link" href="index.html"><h2 class="header-title">Quizzle</h2></a>
+        <a class="home-link" href="index.html">
+            <h2 class="header-title">Quizzle</h2>
+        </a>
         <span class="quiz-selector-btn" onclick="fetchQuiz('sports')">Sports</span>
         <span class="quiz-selector-btn" onclick="fetchQuiz('geography')">Geography</span>
     </header>
@@ -70,6 +72,8 @@
             <h1 class="result-header"></h1>
             <h3 class="result-info"></h3>
             <p class="try-again">Want to try another quiz? Select one from the menu</p>
+            <button class="btn btn-primary show-answers-btn" type="button" onclick="showAnswersTable()">Show Answers</button>
+            <table class="answers-table"></table>
         </div>
         <!-- END OF QUIZ CONTAINER -->
     </div>

@@ -1,15 +1,3 @@
-//Function for switching which CSS file is used when user toggles dark/light mode
-function darkMode() {
-
-    var darkSwitch = $("#toggle-switch").is(":checked")
-
-    if (darkSwitch === true) {
-        $("link[rel=stylesheet]").attr({ href: "dark-style.css" });
-    } else {
-        $("link[rel=stylesheet]").attr({ href: "light-style.css" });
-    }
-}
-
 //Defining quiz and multiple subclasses of quiz to enable easier access to data
 class Quiz {
     constructor(_genre, _noOfQuestions) {
@@ -40,10 +28,37 @@ class UsersAnswer extends Questions {
     }
 }
 
+//Function for switching which CSS file is used when user toggles dark/light mode
+function darkMode() {
 
+    let darkSwitch = $("#toggle-switch").is(":checked")
 
+    if (darkSwitch === true) {
+        $("link[rel=stylesheet]").attr({ href: "dark-style.css" });
+    } else {
+        $("link[rel=stylesheet]").attr({ href: "light-style.css" });
+    }
+}
 
+//Function for showing/hiding answers table after quiz is completed
+function showAnswersTable() {
+    console.log("show answers firing");
 
+    let answersTable = $(".answers-table");
+    let showBtn = $(".show-answers-btn");
+    
+    if ($(showBtn).text() == "Show Answers") {
+        $(answersTable).show();
+        $(showBtn).text("Hide Answers");
+        $("#footer").addClass("footer-initial");
+    } else {
+        $(answersTable).hide();
+        $(showBtn).text("Show Answers");
+        $("#footer").removeClass("footer-initial");
+    }
+}
+
+//Function which fetches quiz from API
 function fetchQuiz(topic) {
 
     let url;
@@ -62,7 +77,7 @@ function fetchQuiz(topic) {
     }
 
     //Creating new XMLHTTP request
-    var request = new XMLHttpRequest();
+    let request = new XMLHttpRequest();
 
     //Using GET request on the API and passing in the URL that is decided by the switch statement
     request.open('GET', url, true);
@@ -78,7 +93,7 @@ function fetchQuiz(topic) {
         let answersObjects = [];
         let questionObjects = [];
 
-        
+
         let quiz = new Quiz(genre, noOfQuestions);
 
         //Looping through all the questions provided by API
@@ -93,6 +108,7 @@ function fetchQuiz(topic) {
             //Pushing correct answer to array too
             tempAnswers.push(record.correct_answer);
 
+            //Calling shuffleArray in order to randomise the position of the correct answer within tempAnswers
             tempAnswers = shuffleArray(tempAnswers);
 
             //Creating new instance of questions class and passing it the records question as parameter
@@ -108,7 +124,7 @@ function fetchQuiz(topic) {
 
         let currentQuestion = 0;
 
-        //Displaying the information returned by 
+        //Displaying the information returned by API
         displayQuizInformation(answersObjects, questionObjects, genre, noOfQuestions, currentQuestion);
         implementButtons(answersObjects, questionObjects, noOfQuestions, currentQuestion);
     }
@@ -116,8 +132,6 @@ function fetchQuiz(topic) {
     //Sending request to fetch data
     request.send();
 }
-
-
 
 //Function for displaying basic quiz the first time a new quiz is loaded
 function displayQuizInformation(answersObjects, questionObjects, genre, noOfQuestions, currentQuestion) {
@@ -134,22 +148,19 @@ function displayQuizInformation(answersObjects, questionObjects, genre, noOfQues
     displayQuestion(answersObjects, questionObjects, currentQuestion, noOfQuestions, selectedAnswers);
 }
 
-
-
-
-
 //Function for displaying the given question to the user
 function displayQuestion(answersObjects, questionObjects, currentQuestion, noOfQuestions, selectedAnswers) {
     $(".quiz-question").html(questionObjects[currentQuestion].question);
     $(".page-info").text("(" + (currentQuestion + 1) + " of " + noOfQuestions + ")");
 
+    //If on final question, change next button to contain "Submit Answers", otherwise "Next >"
     if (currentQuestion + 1 === noOfQuestions) {
         $(".next-btn").text("Submit Answers");
     } else {
         $(".next-btn").html("Next&nbsp;<i class=\"fa fa-angle-right\"></i>");
     }
 
-
+    //Setting the value of the radio button and the html of the span within it
     for (let i = 0; i < $("input[name='answer']").length; i++) {
 
         let currentInput = $("input[name='answer']")[i];
@@ -170,10 +181,6 @@ function displayQuestion(answersObjects, questionObjects, currentQuestion, noOfQ
     }
 }
 
-
-
-
-
 //Function for implementing the next and previous buttons
 function implementButtons(answersObjects, questionObjects, noOfQuestions, _currentQuestion) {
 
@@ -184,24 +191,25 @@ function implementButtons(answersObjects, questionObjects, noOfQuestions, _curre
     let nextBtn = $(".next-btn");
     let prevBtn = $(".prev-btn");
 
+    //First unbinding (in case the user wants to take multiple quizzes) and then binding onclick events for next button
+    nextBtn.unbind('click').click(function () {
 
-    nextBtn.click(function () {
-        console.log(selectedAnswers);
-        console.log(currentQuestion);
-        //WHEN CONSOLE LOGGING HERE, IF THIS IS THE SECOND QUIZ THE IS ANSWERING THEN THESE VARIABLES WILL DISPLAY TWO TIMES
-        //ONCE WILL SHOW THE RESULTS FOR THE NEW QUIZ, AND ONCE THE RESULTS FOR THE OLD QUIZ. FOR EVERY NEW QUIZ, IT WILL DISPLAY
-        //AGAIN, SO THREE QUIZZES = THREE RESULTS FOR EACH VARIABLE, FOUR = FOUR, ETC.
-
+        //If the current question is not the final question, saving the answer, incrementing currentQuestion and displaying the next question
         if (currentQuestion < noOfQuestions - 1) {
 
             selectedAnswers = saveAnswer(selectedAnswers, currentQuestion);
             currentQuestion++;
             displayQuestion(answersObjects, questionObjects, currentQuestion, noOfQuestions, selectedAnswers);
         } else {
+
+            //If the current question is the final question, saving the answer
             selectedAnswers = saveAnswer(selectedAnswers, currentQuestion);
 
+            //Setting answeredAll to true, we will change this if user has not answered all questions
             let answeredAll = true;
 
+            //Checking SelectedAnswers.length is equal to the noOfQuestions, then looping through each answer checking for null values
+            //if any of the answers stored are null, setting answeredAll to false and breaking out of the if statement. 
             if (selectedAnswers.length === noOfQuestions) {
                 for (let j = 0; j < selectedAnswers.length; j++) {
                     if (selectedAnswers[j] == null) {
@@ -210,18 +218,25 @@ function implementButtons(answersObjects, questionObjects, noOfQuestions, _curre
                     }
                 }
             } else {
+                //If SelectedAnswers.length is not equal to the noOfQuestions, user has not answered all questions
                 answeredAll = false;
             }
 
+            //If answeredAll is false, alert user that they need to go back through and answer every question
+            //else calling the submitAnswers function
             if (!answeredAll) {
                 alert("Please go back through and ensure you've selected an answer to every question before submitting");
             } else {
-                submitAnswers(selectedAnswers, answersObjects);
+                submitAnswers(selectedAnswers, answersObjects, questionObjects);
             }
         }
     });
 
-    prevBtn.click(function () {
+    //First unbinding (in case the user wants to take multiple quizzes) and then binding onclick events for next button
+    prevBtn.unbind('click').click(function () {
+
+        //If currentQuestion is greater than 0, saving answer, decrementing currentQuestion and displaying the previous question
+        //else if currentQuestion is 0, we're on the first question so alerting to users that they can't go any further back
         if (currentQuestion > 0) {
             selectedAnswers = saveAnswer(selectedAnswers, currentQuestion);
             currentQuestion--;
@@ -233,32 +248,48 @@ function implementButtons(answersObjects, questionObjects, noOfQuestions, _curre
 
 }
 
+//Function for savingAnswers, which is given the selectedAnswers array and currentQuestion as parameters
 function saveAnswer(selectedAnswers, currentQuestion) {
 
+//Loop through the input options, and check if the radio button for that input option is checked
+//if it is, creating new instance of UsersAnswer and passing in that value
+//setting that to it's corresponding position in the selectedAnswers array
     for (let i = 0; i < $("input[name='answer']").length; i++) {
         let currentInput = $("input[name='answer']")[i];
-
         if ($(currentInput).prop("checked") == true) {
             let userChoice = new UsersAnswer(currentInput.value);
             selectedAnswers[currentQuestion] = userChoice;
         }
     }
 
+    //Returning selectedAnswers to it's caller
     return selectedAnswers;
 }
 
+//Function for submittingAnswers
+function submitAnswers(selectedAnswers, answersObjects, questionObjects) {
 
-function submitAnswers(selectedAnswers, answersObjects) {
-
+    //Creating new variable to keep track of number of correct answer user has
     let noCorrect = 0;
+
+    //Preparing the answers-table for receiving data
+    $(".answers-table").html("<tr class=\"table-headers\"><th>The Question:</th><th>Your Choice:</th><th>Correct Answer:</th><th>Result:</th></tr>");
+    
+    //Looping through the selectedAnswers, creating new table rows and assigning class depending on whether user was correct or not
+    //If user was correct, also incrementing noCorrect
     for (let i = 0; i < selectedAnswers.length; i++) {
         if (selectedAnswers[i].choice === answersObjects[i].correctAnswer) {
             noCorrect++;
+            $(".answers-table").append("<tr class=\"correct-row\"><td>" + questionObjects[i].question + "</td><td>" + selectedAnswers[i].choice + "</td><td>" + answersObjects[i].correctAnswer + "</td><td>&#10003;</td></tr>");
+        } else {
+            $(".answers-table").append("<tr class=\"incorrect-row\"><td>" + questionObjects[i].question + "</td><td>" + selectedAnswers[i].choice + "</td><td>" + answersObjects[i].correctAnswer + "</td><td>&#10007;</td></tr>");
         }
     }
 
+    //Creating new feedback variable
     let feedback;
 
+    //Switch statement which chooses response based on users performance
     switch (noCorrect) {
         case 0:
         case 1:
@@ -283,24 +314,22 @@ function submitAnswers(selectedAnswers, answersObjects) {
             break;
     }
 
+    //Hiding the quiz container, displaying the results container, and setting the information within the results container
     $(".quiz-container").hide();
     $(".results-container").show();
     $(".result-header").text(feedback);
     $(".result-info").text("You had " + noCorrect + " out of " + selectedAnswers.length + " correct");
 }
 
-
+//Function for shuffling the temporary arrays of answers in order to randomise which position the correct answer is in
 function shuffleArray(array) {
+
+    //Loop through the items in the array, using Math.random() to shuffle the items within the array
     for (let i = array.length - 1; i > 0; i--) {
         const j = Math.floor(Math.random() * (i + 1));
         [array[i], array[j]] = [array[j], array[i]];
     }
+
+    //Returning shuffled array to caller
     return array;
 }
-
-
-/* Still to do -
-       8. fix so you can do multiple quizzes
-
-       9. implement show results button which shows which questions you had right/wrong
-    */
