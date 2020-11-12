@@ -78,6 +78,9 @@ function fetchQuiz(topic) {
         let answersObjects = [];
         let questionObjects = [];
 
+        
+        let quiz = new Quiz(genre, noOfQuestions);
+
         //Looping through all the questions provided by API
         data.results.forEach(record => {
 
@@ -116,7 +119,7 @@ function fetchQuiz(topic) {
 
 
 
-
+//Function for displaying basic quiz the first time a new quiz is loaded
 function displayQuizInformation(answersObjects, questionObjects, genre, noOfQuestions, currentQuestion) {
 
     $(".quiz-container").show();
@@ -127,6 +130,7 @@ function displayQuizInformation(answersObjects, questionObjects, genre, noOfQues
 
     let selectedAnswers = [];
 
+    //Calling displayQuestion and passing over parameters that were given to this function - displaying first question
     displayQuestion(answersObjects, questionObjects, currentQuestion, noOfQuestions, selectedAnswers);
 }
 
@@ -134,7 +138,7 @@ function displayQuizInformation(answersObjects, questionObjects, genre, noOfQues
 
 
 
-
+//Function for displaying the given question to the user
 function displayQuestion(answersObjects, questionObjects, currentQuestion, noOfQuestions, selectedAnswers) {
     $(".quiz-question").html(questionObjects[currentQuestion].question);
     $(".page-info").text("(" + (currentQuestion + 1) + " of " + noOfQuestions + ")");
@@ -154,6 +158,7 @@ function displayQuestion(answersObjects, questionObjects, currentQuestion, noOfQ
         currentInput.value = answersObjects[currentQuestion].answers[i];
         $(correspondingSpan).html(answersObjects[currentQuestion].answers[i]);
 
+        //Checking if user has already answered this question and if they have, marking their current answer as checked
         if (selectedAnswers[currentQuestion] != null) {
             if (selectedAnswers[currentQuestion].choice === currentInput.value) {
                 $(currentInput).prop("checked", true);
@@ -169,18 +174,24 @@ function displayQuestion(answersObjects, questionObjects, currentQuestion, noOfQ
 
 
 
-
+//Function for implementing the next and previous buttons
 function implementButtons(answersObjects, questionObjects, noOfQuestions, _currentQuestion) {
-    
+
+    //Taking currentQuestion from the parameters and creating a new selectedAnswers array
     let currentQuestion = _currentQuestion;
     let selectedAnswers = [];
+
     let nextBtn = $(".next-btn");
     let prevBtn = $(".prev-btn");
 
+
     nextBtn.click(function () {
-        console.log(currentQuestion);
         console.log(selectedAnswers);
-        
+        console.log(currentQuestion);
+        //WHEN CONSOLE LOGGING HERE, IF THIS IS THE SECOND QUIZ THE IS ANSWERING THEN THESE VARIABLES WILL DISPLAY TWO TIMES
+        //ONCE WILL SHOW THE RESULTS FOR THE NEW QUIZ, AND ONCE THE RESULTS FOR THE OLD QUIZ. FOR EVERY NEW QUIZ, IT WILL DISPLAY
+        //AGAIN, SO THREE QUIZZES = THREE RESULTS FOR EACH VARIABLE, FOUR = FOUR, ETC.
+
         if (currentQuestion < noOfQuestions - 1) {
 
             selectedAnswers = saveAnswer(selectedAnswers, currentQuestion);
@@ -249,21 +260,24 @@ function submitAnswers(selectedAnswers, answersObjects) {
     let feedback;
 
     switch (noCorrect) {
+        case 0:
         case 1:
+            feedback = "Did you do the quiz with your eyes closed?";
+            break;
         case 2:
         case 3:
         case 4:
-            feedback = "Not the best, but I know you can do better";
+            feedback = "Not the best, but I know you can do better!";
             break;
         case 5:
         case 6:
         case 7:
-        case 8:
-            feedback = "Good effort";
+            feedback = "Good effort!";
             break;
+        case 8:
         case 9:
         case 10:
-            feedback = "Woah, nicely done - that's a great score";
+            feedback = "Woah, nicely done - that's a great score!";
             break;
         default:
             break;
@@ -271,7 +285,7 @@ function submitAnswers(selectedAnswers, answersObjects) {
 
     $(".quiz-container").hide();
     $(".results-container").show();
-    $(".result-header").text(feedback + "!");
+    $(".result-header").text(feedback);
     $(".result-info").text("You had " + noCorrect + " out of " + selectedAnswers.length + " correct");
 }
 
