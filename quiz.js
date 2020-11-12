@@ -50,11 +50,9 @@ function showAnswersTable() {
     if ($(showBtn).text() == "Show Answers") {
         $(answersTable).show();
         $(showBtn).text("Hide Answers");
-        $("#footer").addClass("footer-initial");
     } else {
         $(answersTable).hide();
         $(showBtn).text("Show Answers");
-        $("#footer").removeClass("footer-initial");
     }
 }
 
